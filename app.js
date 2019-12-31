@@ -8,7 +8,7 @@ app.get('/', function(req, res){
    res.sendFile(__dirname + '/public/views/index.html');
 });
 
-;
+
 
 /*io.on('connection', function(socket){
   console.log('a user connected');
@@ -25,17 +25,19 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 	//socket.broadcast.emit('hi');	
+	
   socket.on('chat message', function(user_id,msg,time){
 	  //console.log("msg"+time);
-    io.emit('chat message',user_id,msg,time);
+    //io.emit('chat message',user_id,msg,time);//send message to all user
+	io.to(socket.id).emit('chat message',user_id,msg,time);//send message to specific user
+
+	socket.broadcast.to(socket.id).emit('chat message',user_id,msg,time);
+	   //console.log(socket.id + 'chat message');
+
   });
 });
-
-//io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
-
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 //https://socket.io/get-started/chat/
-//https://stackoverflow.com/questions/23619015/creating-a-private-chat-between-a-key-using-a-node-js-and-socket-io
